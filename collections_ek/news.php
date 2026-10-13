@@ -2,12 +2,30 @@
 	<body>
 		<?php zp_apply_filter('theme_body_open'); ?>
 		<a href="#main-content" tabindex="0" class="skip-to-content">Skip to main content</a>
+		<div id="fb-root"></div>
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v22.0"></script>
 	
 		<div class="grid-container <?=$navbar;?>bar-layout">
 		
 			<?php include '_inc/inc-'.$navbar.'bar.php'; ?>
 			
 			<main class="<?=$active_template ?>">
+			    
+			    <div class="article_side">
+						<h1 class="page_title"><?php echo gettext("News"); ?></h1>
+
+
+<?php
+							if (function_exists('printSizedFeaturedImage') && is_NewsCategory()) { // category featured image
+								printSizedFeaturedImage($_zp_current_category,'', null, 900, null, null, null, null, null, 'featuredimage_singlecategory', null, false, null, true);
+							}
+						?>
+						
+						
+						<?php # Showing Categories
+									printAllNewsCategories(gettext("All News"),false,"categories_list","categories_list_active");
+						?>
+					</div>
 
 							<?php // single news article
 						if (is_NewsArticle()) { ?>
@@ -81,21 +99,6 @@
 							</div> <!--END article_loop-->
 							<?php }	?>
 
-					<div class="article_side">
-						<h1 class="page_title"><?php echo gettext("News"); ?></h1>
-
-
-<?php
-							if (function_exists('printSizedFeaturedImage') && is_NewsCategory()) { // category featured image
-								printSizedFeaturedImage($_zp_current_category,'', null, 900, null, null, null, null, null, 'featuredimage_singlecategory', null, false, null, true);
-							}
-						?>
-						
-						
-						<?php # Showing Categories
-									printAllNewsCategories(gettext("All News"),false,"categories_list","categories_list_active");
-						?>
-					</div>
 		</main>
 
 <footer class="footer"><?php include("_inc/inc-footer.php"); ?></footer>
