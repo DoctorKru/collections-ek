@@ -18,11 +18,19 @@
 	</button>	
 	<!-- Menu burger : end -->
 <?php
-	// Load custom menu
-	if (function_exists('printCustomMenu') && getOption('collections_custommenu')) {
-		printCustomMenu('collections', 'list-top', 'nav-links', 'menu-active', 'nav-links-sub', 'menu-active-sub', 2,false);
-	} 
-	//else…
+	// Load custom menu with correct active class mapping
+    if (function_exists('printCustomMenu') && getOption('col_custommenu_top')) {
+        printCustomMenu(
+            'col-topbar',          // 1: $menuset
+            'list',                // 2: $option
+            'nav-links',           // 3: $css_id
+            'menu-active',         // 4: $css_class_topactive
+            'nav-links-sub',       // 5: $css_class
+            'menu-active-sub',     // 6: $css_class_active
+            2,                     // 7: $showsubs
+            false                  // 8: $counter
+        );
+    } 
 	else { ?>	
 	
 	<ul id="nav-links" class="nav-display">
@@ -41,7 +49,7 @@
 		printPageMenu("list-top","","menu-active-page","","","","1",false); 
 		}
 		// Gallery index
-		echo '<li><a href="'.html_encode(getCustomPageURL('gallery')).'">'.gettext("Gallery").'</a></li>';
+		echo '<li><a href="'.html_encode(getCustomPageURL('all_albums')).'">'.gettext("Gallery").'</a></li>';
 		#echo printGalleryIndexURL();
 		#echo getGalleryIndexURL(); gettext("Gallery");
 		#echo '<li>';
@@ -63,9 +71,9 @@
 		if (function_exists('printContactForm')) {
 		echo '<li>';
 		if ($_zp_gallery_page == "contact.php") {
-			printCustomPageURL(gettext('Contact us'), 'contact', '', '','','menu-active');
+			printCustomPageURL(gettext('Contact'), 'contact', '', '','','menu-active');
 			} else { 
-			printCustomPageURL(gettext('Contact us'), 'contact', '', '');
+			printCustomPageURL(gettext('Contact'), 'contact', '', '');
 		}
 			echo '</li>';
 			// Fix for login link active
