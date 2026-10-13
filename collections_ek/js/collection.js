@@ -1,5 +1,5 @@
 const toggle_nav = document.querySelector(".toggle_nav");
-const menu = document.querySelector(".nav-display");
+const menu = document.querySelector(".nav-display") || document.querySelector("#nav-links");
 const icon_anime = document.querySelector("#menu-icon-anime");
 const items = document.querySelectorAll(".item");
 
