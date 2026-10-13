@@ -34,13 +34,21 @@
 					if ($_zp_current_image->isPhoto()) { ?>
 						<figure class="js-item"><!--	Class for js suffle -->
 							 <div class="image_thumb_container"><!--	Class for hidding oversize hover effect -->
-								<a href="<?php echo html_encode(getFullImageURL()); ?>" title="<?php printBareImageTitle(); ?>" data-fancybox="images">
-									<img 
-									src="<?php echo html_encode(getCustomImageURL(NULL,500,NULL,NULL,NULL,NULL,NULL,false,NULL)); ?>" 
-									alt="<?php echo getBareImageTitle(); ?>" 
-									width="<?php echo getFullWidth(); ?>" 
-									height="<?php echo getFullHeight(); ?>" />
-								</a>
+								<a href="<?php echo html_encode(getFullImageURL()); ?>"
+							data-srcset="<?php echo html_encode(getFullImageURL()); ?> 3000w,
+										<?php echo html_encode(getCustomImageURL(2200,NULL,NULL,NULL,NULL,NULL,NULL,false,NULL)); ?> 2200w,
+                                        <?php echo html_encode(getCustomImageURL(NULL,1280,NULL,NULL,NULL,NULL,NULL,false,NULL)); ?> 1280w,
+                                        <?php echo html_encode(getCustomImageURL(NULL,640,NULL,NULL,NULL,NULL,NULL,false,NULL)); ?> 640w"
+                                        data-sizes="100vw"
+                                        title="<?php printBareImageTitle(); ?>"
+							data-download-src="<?php echo html_encode(getFullImageURL()); ?>"										
+                                        data-fancybox="images">
+	                                <img 
+	                                src="<?php echo html_encode(getCustomImageURL(NULL,640,NULL,NULL,NULL,NULL,NULL,false,NULL)); ?>" 
+	                                alt="<?php echo getBareImageTitle(); ?>" 
+	                                width="<?php echo getFullWidth(); ?>" 
+	                                height="<?php echo getFullHeight(); ?>" />
+                                </a>
 						</div>
 						<figcaption>
 						<a href="<?php echo html_encode(getImageURL()); ?>" title="<?php printBareImageTitle(); ?>">
