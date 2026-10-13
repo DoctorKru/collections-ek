@@ -21,15 +21,39 @@
 					} 
 					# Responsive picture for photo
 						if ($_zp_current_image->isPhoto()) { ?>
-					<div class="img_responsive">
-						<img srcset="<?php echo html_encode(getCustomImageURL(NULL,2200,NULL,NULL,NULL,NULL,NULL,false,NULL)); ?>  2200w,
-										<?php echo html_encode(getCustomImageURL(NULL,1280,NULL,NULL,NULL,NULL,NULL,false,NULL)); ?> 1280w,
-					      		<?php echo html_encode(getCustomImageURL(NULL,640,NULL,NULL,NULL,NULL,NULL,false,NULL)); ?>  640w" 
-					  sizes="100vw" 
-					  src="<?php echo html_encode(getCustomImageURL(NULL,640,NULL,NULL,NULL,NULL,NULL,false,NULL)); ?>" 
+						<div class="img_responsive">
+		<?php 
+	// Get raw dimensions safely
+	$full_w = (int) getFullWidth();
+	$full_h = (int) getFullHeight();
+	
+	// Calculate aspect ratio safely
+	$aspect_ratio = ($full_h > 0) ? ($full_w / $full_h) : 1.0;
+	
+	// Calculate the correct responsive width attributes for the srcset tags
+	$w_2200 = ($full_w > $full_h) ? 2200 : (int) round(2200 * $aspect_ratio);
+	$w_1280 = ($full_w > $full_h) ? 1280 : (int) round(1280 * $aspect_ratio);
+	$w_640  = ($full_w > $full_h) ? 640  : (int) round(640 * $aspect_ratio);
+
+	// Default layout string
+	$sizes_attr = "100vw"; 
+	
+	// If it's a vertical (portrait) image, compute the horizontal viewport constraints
+	if ($full_h > $full_w) {
+		// 85 matches your CSS max-height: 85vh;
+		$calculated_vh_width = (int) round(85 * $aspect_ratio); 
+		$sizes_attr = "(orientation: landscape) " . $calculated_vh_width . "vh, 100vw";
+	}
+	?>
+	<img srcset="<?php echo html_encode(getFullImageURL()); ?> <?php echo $full_w; ?>w,
+				 <?php echo html_encode(getCustomImageURL(2200,NULL,NULL,NULL,NULL,NULL,NULL,false,NULL)); ?> <?php echo $w_2200; ?>w,
+				 <?php echo html_encode(getCustomImageURL(NULL,1280,NULL,NULL,NULL,NULL,NULL,false,NULL)); ?> <?php echo $w_1280; ?>w,
+				 <?php echo html_encode(getCustomImageURL(NULL,640,NULL,NULL,NULL,NULL,NULL,false,NULL)); ?> <?php echo $w_640; ?>w"  
+					  sizes="<?php echo $sizes_attr; ?>" 
+					  src="<?php echo html_encode(getCustomImageURL(NULL,1280,NULL,NULL,NULL,NULL,NULL,false,NULL)); ?>" 
 					  alt="<?php echo getBareImageTitle(); ?>" 
-					  width="<?php echo getFullWidth(); ?>"
-					  height="<?php echo getFullHeight(); ?>" >
+					  width="<?php echo $full_w; ?>"
+					  height="<?php echo $full_h; ?>" >
 					</div>
 					<?php # Everything else (video, text…)
 							} else {
@@ -66,6 +90,16 @@
 						<h1><?php printImageTitle(); ?></h1>
 							<?php printImageDesc(); ?>
 							<?php	printTags('links', '', 'taglist', ''); ?>
+							<!-- CUSTOM DATA FIELD START -->
+							<?php 
+							$custom_data = getImageCustomData(); 
+							if (!empty($custom_data)) { 
+							?>
+								<div class="picture_custom_data">
+									<?php printImageCustomData(); ?>
+								</div>
+							<?php } ?>
+							<!-- CUSTOM DATA FIELD END -->
 					</div>
 					<div class="picture_icons">
 						<?php if (getOption('collections_download')) { ?><a download href="<?php echo html_encode(getFullImageURL()); ?>" title="<?php echo gettext('Download'); ?>"   class="svg_button download" >
