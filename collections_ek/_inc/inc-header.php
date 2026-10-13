@@ -70,12 +70,14 @@
 			$.fancybox.defaults.lang = '<?php $loc = substr(getOption('locale'), 0, 2); if (empty($loc)) {$loc = 'en';}; echo $loc; ?>';
 			$.fancybox.defaults.i18n = {
 				'<?php echo $loc; ?>' : {
+					DOWNLOAD	: '<?php echo gettext('Download'); ?>',
 					CLOSE		: '<?php echo gettext('close'); ?>',
 					NEXT		: '<?php echo gettext('next'); ?>',
 					PREV		: '<?php echo gettext('prev'); ?>',
 					PLAY_START	: '<?php echo gettext('start slideshow'); ?>',
 					PLAY_STOP	: '<?php echo gettext('stop slideshow'); ?>',
-					THUMBS		: '<?php echo gettext_th('thumbnails'); ?>'
+					ERROR		: '<?php echo gettext_th('The requested content cannot be loaded.'); ?>',
+					THUMBS		: '<?php echo gettext('Thumbs'); ?>'
 				}
 			};
 
@@ -88,12 +90,21 @@
 	<script type="text/javascript">
 	//<![CDATA[
 		<?php
+/**_th
+ * EK Fix: Declared globals and added isset() check to stop PHP 8.1+
+ * undefined variable warnings when ZP is inactive.
+ */
+		global $_zp_gallery_page, $_zenpage_news_enabled;
+
 		$NextURL = $PrevURL = false;
 		if ($_zp_gallery_page == 'image.php') {
 			if (hasNextImage()) { ?>var nextURL = "<?php echo html_encode(getNextImageURL()); $NextURL = true; ?>";<?php }
 			if (hasPrevImage()) { ?>var prevURL = "<?php echo html_encode(getPrevImageURL()); $PrevURL = true; ?>";<?php }
 		} else {
-			if ($_zenpage_news_enabled && is_NewsArticle()) {
+			$zenpage_active = extensionEnabled('zenpage');
+			$news_ready = $zenpage_active && isset($_zenpage_news_enabled) && $_zenpage_news_enabled;
+
+			if ($news_ready && is_NewsArticle()) {
 				if (getNextNewsURL()) { $article_url = getNextNewsURL(); ?>var nextURL = "<?php echo html_decode($article_url['link']); $NextURL = true; ?>";<?php }
 				if (getPrevNewsURL()) { $article_url = getPrevNewsURL(); ?>var prevURL = "<?php echo html_decode($article_url['link']); $PrevURL = true; ?>";<?php }
 			}
