@@ -13,11 +13,20 @@ if (getOption('Allow_search')) {
 	printSearchForm("", "sidebar_search", "", "→",NULL,NULL,NULL,false);
 }	
 
-if (function_exists('printCustomMenu') && getOption('collections_custommenu')) {
-	echo "<section>";
-	printCustomMenu('collections', 'list-top', '', 'menu-active', 'submenu', 'menu-active', 2,false);
-	echo "</section>";
-	} 
+if (function_exists('printCustomMenu') && getOption('col_custommenu_side')) {
+    echo "<section id=\"custom-sidebar-section\">";
+    printCustomMenu(
+        'col-sidebar',           // 1: $menuset
+        'list',                  // 2: $option
+        'custom-sidebar-menu',   // 3: $css_id
+        'menu-active',           // 4: $css_class_topactive
+        'submenu',               // 5: $css_class
+        'menu-active-sub',       // 6: $css_class_active
+        2,                       // 7: $showsubs (depth of sublevels)
+        false                    // 8: $counter (false/true disable or enable items statistics)
+    );
+    echo "</section>";
+}
 	else {
 		if (function_exists("printAlbumMenu")) { 
 			echo '<section class="section_printAlbumMenu">';
@@ -79,8 +88,8 @@ if (function_exists('printCustomMenu') && getOption('collections_custommenu')) {
 		
 		<?php if (function_exists('printContactForm')) { 
 	// This loop enable a "menu-active" class to keep conconsistency styling with printAlbumMenu function.
-		if ($_zp_gallery_page != 'contact.php') { echo '<li>',printCustomPageURL(gettext('Contact us'), 'contact', '', ''),'</li>';}
-		else { echo '<li class="menu-active">',printCustomPageURL(gettext('Contact us'), 'contact', '', ''),'</li>';} } ?>
+		if ($_zp_gallery_page != 'contact.php') { echo '<li>',printCustomPageURL(gettext('Contact'), 'contact', '', ''),'</li>';}
+		else { echo '<li class="menu-active">',printCustomPageURL(gettext('Contact'), 'contact', '', ''),'</li>';} } ?>
 	</ul>
 </section>
 
