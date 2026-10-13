@@ -17,11 +17,11 @@ class ThemeOptions {
 		// set core theme option defaults
 		setThemeOptionDefault('Allow_search', true);
 		setThemeOptionDefault('Use_thickbox', true);
-		setThemeOptionDefault('albums_per_page', 8);
+		setThemeOptionDefault('albums_per_page', 12);
 		setThemeOptionDefault('images_per_page', 20);
-		setThemeOption('image_size', 2200, NULL, 'collections');
-		setThemeOption('image_use_side', 'longest', NULL, 'collections');
-		setThemeOption('thumb_size', 450, NULL, 'collections');
+		setThemeOption('image_size', 2200, NULL, $me);
+		setThemeOption('image_use_side', 'longest', NULL, $me);
+		setThemeOption('thumb_size', 450, NULL, $me);
 		setThemeOptionDefault('thumb_crop_width', 450);
 		setThemeOptionDefault('thumb_crop_height', 450);
 		setThemeOptionDefault('thumb_crop', 1);
@@ -32,14 +32,19 @@ class ThemeOptions {
 		setThemeOptionDefault('collections_metas', true);
 		setThemeOptionDefault('comment_form_toggle', false);
 		setThemeOptionDefault('col_albdesc', false);		
-		setThemeOptionDefault('collections_custommenu', false);
+		setThemeOptionDefault('col_custommenu_top', false);
+		setThemeOptionDefault('col_custommenu_side', false);
+		setThemeOptionDefault('col_custommenu_foot', false);
+		setThemeOptionDefault('col_show_zplink', true);
 		setThemeOptionDefault('collections_homepage', '');
 		setThemeOptionDefault('collections_sidebar', false);
+
 		if (extensionEnabled('zenpage')) {
-			setThemeOption('custom_index_page', 'gallery', NULL, 'collections', false);
+			setThemeOption('custom_index_page', 'gallery', NULL, $me, false);
 		} else {
-			setThemeOption('custom_index_page', '', NULL, 'collections', false);
+			setThemeOption('custom_index_page', '', NULL, $me, false);
 		}
+
 		if (class_exists('cacheManager')) {
 			cacheManager::deleteCacheSizes($me);
 			cacheManager::addDefaultThumbSize();
@@ -49,31 +54,26 @@ class ThemeOptions {
 			cacheManager::addCacheSize($me,null, 640, null, null, null, null, null, true, false);
 			cacheManager::addCacheSize($me,null, 500, null, null, null, null, null, true, false);
 		}
+
 		if (function_exists('createMenuIfNotExists')) {
-			$menuitems = array(
-					array(
-							'type' => 'menulabel',
-							'title' => gettext('News Articles'),
-							'link' => '',
-							'show' => 1,
-							'nesting' => 0),
-					array(
-							'type' => 'menulabel',
-							'title' => gettext('Gallery'),
-							'link' => '',
-							'show' => 1,
-							'nesting' => 0),
+			$menuitems_topbar = array(
+				array('type' => 'menulabel', 'title' => gettext('Topbar Item'), 'link' => '', 'show' => 1, 'nesting' => 0)
 			);
-			createMenuIfNotExists($menuitems, 'collections');
+			$menuitems_sidebar = array( 				array('type' => 'menulabel', 'title' => gettext('Sidebar Item'), 'link' => '', 'show' => 1, 'nesting' => 0) 			);$menuitems_footer = array(
+				array('type' => 'menulabel', 'title' => gettext('Footer Item'), 'link' => '', 'show' => 1, 'nesting' => 0)
+			);
+			
+			createMenuIfNotExists($menuitems_topbar, 'col-topbar');
+			createMenuIfNotExists($menuitems_sidebar, 'col-sidebar');
+			createMenuIfNotExists($menuitems_footer, 'col-footer');
 		}
 	}
 
 	function getOptionsSupported() {
 		global $_zp_db;
-		$unpublishedpages = $_zp_db->queryFullArray("SELECT title,titlelink FROM " . $_zp_db->prefix('pages') . " WHERE `show` != 1 ORDER by `sort_order`");
+		$unpublishedpages =$_zp_db->queryFullArray("SELECT title,titlelink FROM " . $_zp_db->prefix('pages') . " WHERE `show` != 1 ORDER by `sort_order`");
 		$list = array();
-		foreach ($unpublishedpages as $page) {
-			$list[get_language_string($page['title'])] = $page['titlelink'];
+		foreach ($unpublishedpages as $page) {$list[get_language_string($page['title'])] =$page['titlelink'];
 		}
 		return array(
 				gettext('Show sidebar') => array(
@@ -102,10 +102,22 @@ class ThemeOptions {
 						'selections' => $list,
 						'null_selection' => gettext('none'),
 						'desc' => gettext("Choose here any <em>un-published Zenpage page</em> (listed by <em>titlelink</em>) to act as your site’s homepage instead the normal gallery index.") . "<p class='notebox'>" . gettext("<strong>Note:</strong> This of course overrides the <em>News on index page</em> option and your theme must be setup for this feature! Visit the theming tutorial for details.") . "</p>"),
-				gettext('Use custom menu') => array(
-						'key' => 'collections_custommenu',
+				gettext('Custom Topbar menu') => array(
+						'key' => 'col_custommenu_top',
 						'type' => OPTION_TYPE_CHECKBOX,
-						'desc' => gettext("Check this if you want to use the <em>menu_manager</em> plugin if enabled to build a custom menu instead of the separate standard ones. A standard menu named 'collections' is created and used automatically."))
+						'desc' => gettext("Check to build custom menu via Menu Manager if the <em>menu_manager</em> plugin is enabled. The default menu set <code>col-topbar</code> will be  used to replace default utility links.")),
+				gettext('Custom Sidebar menu') => array(
+						'key' => 'col_custommenu_side',
+						'type' => OPTION_TYPE_CHECKBOX,
+						'desc' => gettext("Check to build custom menu via Menu Manager if the <em>menu_manager</em> plugin is enabled. The default menu set <code>col-sidebar</code> will be  used to replace default utility links.")),
+				gettext('Custom Footer menu') => array(
+						'key' => 'col_custommenu_foot',
+						'type' => OPTION_TYPE_CHECKBOX,
+						'desc' => gettext("Check to build custom menu via Menu Manager if the <em>menu_manager</em> plugin is enabled. The default menu set <code>col-footer</code> will be  used to replace default utility links.")),
+				gettext('Show Zenphoto link') => array(
+						'key' => 'col_show_zplink',
+						'type' => OPTION_TYPE_CHECKBOX,
+						'desc' => gettext('Check to display the "Powered by Zenphoto" link in the footer.'))
 		);
 	}
 
@@ -113,7 +125,7 @@ class ThemeOptions {
 		return array('custom_index_page', 'image_size', 'thumb_size');
 	}
 
-	function handleOption($option, $currentValue) {
+	function handleOption($option,$currentValue) {
 		
 	}
 
