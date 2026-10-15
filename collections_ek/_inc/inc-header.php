@@ -60,7 +60,7 @@
 	<?php zp_apply_filter('theme_head'); ?>
 	<?php printHeadTitle(); ?>
 	<?php if (class_exists('RSS')) printRSSHeaderLink('Gallery', gettext('Gallery RSS')); ?>
-	<link rel="stylesheet" href="<?php echo $_zp_themeroot; ?>/styles.css?v=240606" type="text/css" />
+	<link rel="stylesheet" href="<?php echo $_zp_themeroot; ?>/styles.css?v=151026" type="text/css" />
         <link rel="stylesheet" href="<?php echo $_zp_themeroot; ?>/css/jquery.fancybox.min.css" type="text/css" media="screen"/>
 	<script type="text/javascript" src="<?php echo $_zp_themeroot; ?>/js/jquery.fancybox.min.js"></script>
 	<script type="text/javascript" src="<?php echo $_zp_themeroot; ?>/js/zpB_fancybox_config.js"></script>
